@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public void readFile(View v) {
         try {
             name = nameid.getText().toString();
-            InputStream is = context.openFileInput(name);
+            FileInputStream is = context.openFileInput(name);
             Scanner scan = new Scanner(is);
             String line = "";
             while ( (line = scan.nextLine()) != null) {
@@ -56,6 +59,27 @@ public class MainActivity extends AppCompatActivity {
                 textid.setText(line);
             }
             scan.close();
+            is.close();
+        } catch (IOException e) {
+            Log.e("IO Exception", "IO-virhe");
+        } finally {
+            System.out.println("Luku toimii!");
+        }
+    }
+
+
+    public void readFile2(View v) {
+        try {
+            name = nameid.getText().toString();
+            FileInputStream is = context.openFileInput(name);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = "";
+            while ( (line = br.readLine()) != null) {
+                System.out.println(line);
+                textid.setText(line);
+            }
+            br.close();
+            is.close();
         } catch (IOException e) {
             Log.e("IO Exception", "IO-virhe");
         } finally {
