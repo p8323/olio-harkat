@@ -1,4 +1,4 @@
-package com.example.vko8_t3;
+package com.example.vko8_t4;
 
 import java.text.DecimalFormat;
 import java.math.RoundingMode;
@@ -18,6 +18,11 @@ public class BottleDispenser {
 
     private static BottleDispenser instance = null;
 
+    String bottlestr;
+
+    int choice;
+
+
 
     public BottleDispenser() {
 
@@ -30,14 +35,14 @@ public class BottleDispenser {
         // Add Bottle-objects to the array
 
         bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));
+        /*bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));
         bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));
         bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));
-        bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));
-        bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));
-        /*bottle_array.add(new Bottle("Pepsi Max", 1.5, 2.2));
-        bottle_array.add(new Bottle("Coca-Cola Zero", 0.5, 2.0));
-        bottle_array.add(new Bottle("Coca-Cola Zero", 1.5, 2.5));
-        bottle_array.add(new Bottle("Fanta Zero", 0.5, 1.95));*/
+        bottle_array.add(new Bottle("Pepsi Max", 0.5, (float) 1.80));*/
+        bottle_array.add(new Bottle("Pepsi Max", 1.5, (float) 2.2));
+        bottle_array.add(new Bottle("Coca-Cola Zero", 0.5, (float) 2.0));
+        bottle_array.add(new Bottle("Coca-Cola Zero", 1.5, (float) 2.5));
+        bottle_array.add(new Bottle("Fanta Zero", 0.5, (float) 1.95));
     }
 
 
@@ -53,45 +58,48 @@ public class BottleDispenser {
 
 
 
-    public void buyBottle() {
+    public void buyBottle(String dropdown) {
 
-        for (int i=0; i<bottles; i++) {
-            System.out.println((i+1)+". Name: "+bottle_array.get(i).getName());
-            System.out.println("	Size: "+bottle_array.get(i).getSize()+"	Price: "+bottle_array.get(i).getPrize());
+        for (int i=0; i<bottle_array.size(); i++) {
+            bottlestr = bottle_array.get(i).getName()+" "+bottle_array.get(i).getSize()+" "+bottle_array.get(i).getPrize()+"€";
+            if (bottlestr.equals(dropdown)) {
+                choice = i;
+            }
         }
 
-        System.out.print("Your choice: ");
-        Scanner scans = new Scanner(System.in);
+        //System.out.print("Your choice: ");
+        //Scanner scans = new Scanner(System.in);
 
-        int choice = 1; /*alustus*/
-
-        if (scans.hasNextInt()) {
+        /*if (scans.hasNextInt()) {
             choice = scans.nextInt();
         }
         else {
             scans.next();
-        }
+        }*/
 
-        float prize = bottle_array.get(choice-1).getPrize();
+        float prize = bottle_array.get(choice).getPrize();
 
-        if (money>=prize && bottles>=1) {
-
-            bottles -= 1;
-            money -= prize;
-
-            System.out.println("KACHUNK! "+bottle_array.get(choice-1).getName()+ " came out of the dispenser!");
+        try {
+            if (money>=prize && bottles>=1) {
+                bottles -= 1;
+                money -= prize;
+                MainActivity.text.setText("KACHUNK! "+bottle_array.get(choice).getName()+" "+bottle_array.get(choice).getSize()+" came out of the dispenser!");
+            }
+            else if (money < prize) {
+                MainActivity.text.setText("Add money first!");
+            }
+            else if (bottles<1 ) {
+                MainActivity.text.setText("Bottles out!");
+            }
+            else {
+                MainActivity.text.setText("Shit happened...");
+            }
+        } catch (Exception e) {
+            MainActivity.text.setText("Bottle not available.");
         }
-        else if (money < prize) {
-            System.out.println("Add money first!");
-        }
-        else if (bottles<1 ) {
-            System.out.println("Bottles out!");
-        }
-        else {
-            System.out.println("Add money first!");
-        }
-        bottle_array.remove(choice-1);
+        bottle_array.remove(choice);
         //scans.close();
+        choice = 5000; //alustetaan valinta
     }
 
 
