@@ -2,7 +2,9 @@ package com.example.vko8_t5;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     int progress_changed_value = 0; //alustus
     Spinner spinner;
     String dropdown;
+    Context context = null;
+    String name;
+    String receipt = "***Receipt***";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         });
         spinner = (Spinner) findViewById(R.id.spinner);
         spinnerFunctions();
+        context = MainActivity.this;
     }
 
     public void addMoney(View v) {
@@ -68,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         //text.setText("");
         try {
             dropdown = String.valueOf(spinner.getSelectedItem());
-            dispenser.buyBottle(dropdown); //Tehtävän 3.4 mukainen metodi. Ostetaan aina listan ensimmäinen pullo.
+            dispenser.buyBottle(dropdown);
+            receipt = receipt+"\n"+dropdown;
         } catch (Exception e) {
             text.setText("Bottle not available.");
         }
@@ -77,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     public void removeBottle(View v) {
         //text.setText("");
         dispenser.returnMoney();
+        receipt = "***Receipt***"; //Rahojen palautus alustaa kuitin
     }
 
     public void spinnerFunctions() {
@@ -98,6 +108,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void printReceipt(View v) {
+        try {
+            name = "Receipt.txt";
+            OutputStreamWriter osw = new OutputStreamWriter(context.openFileOutput(name, Context.MODE_PRIVATE));
+            osw.write(receipt);
+            osw.close();
+        } catch (IOException e) {
+            Log.e("IO Exception", "IO-virhe");
+        } finally {
+            System.out.println("Kirjoitus toimii!");
+        }
     }
 }
 
