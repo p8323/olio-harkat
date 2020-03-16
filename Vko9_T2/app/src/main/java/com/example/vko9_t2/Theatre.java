@@ -1,4 +1,4 @@
-package com.example.vko9_t2_2;
+package com.example.vko9_t2;
 
 public class Theatre {
 
