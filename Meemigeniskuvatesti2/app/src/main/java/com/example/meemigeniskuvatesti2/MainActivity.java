@@ -26,24 +26,26 @@ import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView meme;
+    private ImageView meme;
+    private Button button;
     FileManager filemanager = null;
     private int GALLERY_REQUEST_CODE = 1;
     Uri selectedImage;
+    Context maincontext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         meme = (ImageView) findViewById(R.id.meme);
-        Button button = (Button) findViewById(R.id.button);
+        button = (Button) findViewById(R.id.button);
         filemanager = FileManager.getInstance();
     }
 
     public void createMeme(View v) { //TODO tee filemanagerille activity ja siirrä galleria toiminto getImagelle.
-        //Uri image = filemanager.getImage();
-        //meme.setImageURI(image);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
+        Uri image = filemanager.getImage(maincontext);
+        meme.setImageURI(image);
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
             requestGalleryPermission();
         }
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             //String[] mimeTypes = {"image/jpeg", "image/png"};
             //photopickerintent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
             startActivityForResult(photopickerintent, GALLERY_REQUEST_CODE);
-        }
+        }*/
     }
 
     protected void onActivityResult(int requestcode, int resultcode, Intent data) {
