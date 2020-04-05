@@ -19,11 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView meme;
     private Button button;
-    FileManager filemanager = null;
+    private FileManager fileManager = null;
     private int GALLERY_REQUEST_CODE = 1;
-    private Uri imageuri;
+    private Uri imageUri;
     private Bitmap image;
-    Context maincontext = this;
+    private Context mainContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +31,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         meme = (ImageView) findViewById(R.id.meme);
         button = (Button) findViewById(R.id.button);
-        filemanager = FileManager.getInstance();
+        fileManager = FileManager.getInstance(mainContext);
     }
 
     public void createMeme(View v) {
-        filemanager.loadImage(maincontext); //loadImage activates onActivityResult
+        fileManager.loadImage(); //loadImage activates onActivityResult
     }
 
-    protected void onActivityResult(int requestcode, int resultcode, Intent data) {
-        if (resultcode == Activity.RESULT_OK) {
-            if (requestcode == GALLERY_REQUEST_CODE) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GALLERY_REQUEST_CODE) {
                 try {
-                    imageuri = data.getData();
+                    imageUri = data.getData();
                     InputStream imagestream = null;
-                    imagestream = getContentResolver().openInputStream(imageuri);
+                    imagestream = getContentResolver().openInputStream(imageUri);
                     image = BitmapFactory.decodeStream(imagestream);
                     meme.setImageBitmap(image); //sets the image on screen
                 } catch (FileNotFoundException e) {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void save(View v) {
-        filemanager.saveImage(image, maincontext);
+        fileManager.saveImage(image);
     }
 
 }
