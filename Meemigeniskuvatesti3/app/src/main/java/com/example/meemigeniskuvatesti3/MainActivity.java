@@ -4,11 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     FileManager filemanager = null;
     private int GALLERY_REQUEST_CODE = 1;
-    private Uri selectedImage;
+    private Uri imageuri;
+    private Bitmap image;
     Context maincontext = this;
 
     @Override
@@ -35,10 +41,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestcode, int resultcode, Intent data) {
         if (resultcode == Activity.RESULT_OK) {
             if (requestcode == GALLERY_REQUEST_CODE) {
-                selectedImage = data.getData();
-                meme.setImageURI(selectedImage); //sets the image on screen
+                try {
+                    imageuri = data.getData();
+                    InputStream imagestream = null;
+                    imagestream = getContentResolver().openInputStream(imageuri);
+                    image = BitmapFactory.decodeStream(imagestream);
+                    meme.setImageBitmap(image); //sets the image on screen
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    public void save(View v) {
+        filemanager.saveImage(image, maincontext);
     }
 
 }
