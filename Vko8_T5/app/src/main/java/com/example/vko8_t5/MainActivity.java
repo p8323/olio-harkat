@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     String dropdown;
     Context context = null;
     String name;
-    String receipt = "***Receipt***";
+    private String receipt = "***Receipt***";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,17 +76,15 @@ public class MainActivity extends AppCompatActivity {
         //text.setText("");
         try {
             dropdown = String.valueOf(spinner.getSelectedItem());
-            dispenser.buyBottle(dropdown);
-            receipt = receipt+"\n"+dropdown;
+            receipt = dispenser.buyBottle(dropdown);
         } catch (Exception e) {
             text.setText("Bottle not available.");
         }
     }
 
-    public void removeBottle(View v) {
+    public void getMoneyBack(View v) {
         //text.setText("");
         dispenser.returnMoney();
-        receipt = "***Receipt***"; //Rahojen palautus alustaa kuitin
     }
 
     public void spinnerFunctions() {
@@ -110,17 +108,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void printReceipt(View v) {
-        try {
-            name = "Receipt.txt";
-            OutputStreamWriter osw = new OutputStreamWriter(context.openFileOutput(name, Context.MODE_PRIVATE));
-            osw.write(receipt);
-            osw.close();
-        } catch (IOException e) {
-            Log.e("IO Exception", "IO-virhe");
-        } finally {
-            System.out.println("Kirjoitus toimii!");
-        }
+    public void getReceipt(View v) {
+        dispenser.printReceipt(this);
     }
 }
 

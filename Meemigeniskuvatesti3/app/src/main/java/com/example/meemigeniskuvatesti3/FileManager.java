@@ -11,13 +11,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.EditText;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -26,6 +33,7 @@ public class FileManager extends Activity {
     private int GALLERY_REQUEST_CODE = 1;
     private static FileManager instance = null;
     private Context context;
+    private ArrayList<String> texts = new ArrayList<String>(); //texts that are saved are read here at startup
 
     public FileManager(Context maincontext) { //this class gets context from MainActivity
         context = maincontext;
@@ -55,7 +63,7 @@ public class FileManager extends Activity {
                 PackageManager.PERMISSION_GRANTED) {
             try {
                 String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                String fileName = "meme_" + time + ".jpg"; //filename is unique with date on it
+                String fileName = "meme_" + time + ".jpg"; //filename is unique with date and time on it
                 ContentResolver resolver = context.getContentResolver();
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
@@ -74,6 +82,39 @@ public class FileManager extends Activity {
     private void requestPermissions() { //TODO lisää shouldShowRequestPermissionRationale?
         String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE}; //write permission includes reading
         ActivityCompat.requestPermissions((Activity)context, permissions, GALLERY_REQUEST_CODE);
+    }
+
+    public void writeText(EditText editText) {
+        String text = editText.getText().toString()+"\n";
+        String filename = "testi2.csv";
+        try {
+            FileOutputStream fos = context.openFileOutput(filename, MODE_APPEND | context.MODE_PRIVATE);
+            byte[] bytes = text.getBytes();
+            fos.write(bytes);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readText() {
+        String filename = "testi2.csv";
+        try {
+            FileInputStream fis = context.openFileInput(filename);
+            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            BufferedReader reader = new BufferedReader(isr);
+            String line = reader.readLine();
+            while (line != null) {
+                texts.add(line); //add saved texts to arrayList
+                line = reader.readLine();
+            }
+            fis.close();
+            for (int i=0; i<texts.size(); i++) {
+                System.out.println(texts.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static FileManager getInstance(Context mainContext) { //singleton

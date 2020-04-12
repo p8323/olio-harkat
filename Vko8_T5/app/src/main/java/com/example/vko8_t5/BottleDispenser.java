@@ -1,5 +1,11 @@
 package com.example.vko8_t5;
 
+import android.content.Context;
+import android.util.Log;
+import android.view.View;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -22,7 +28,7 @@ public class BottleDispenser {
 
     int choice;
 
-
+    private String receipt = "***Receipt***";
 
     public BottleDispenser() {
 
@@ -58,7 +64,7 @@ public class BottleDispenser {
 
 
 
-    public void buyBottle(String dropdown) {
+    public String buyBottle(String dropdown) {
 
         for (int i=0; i<bottle_array.size(); i++) {
             bottlestr = bottle_array.get(i).getName()+" "+bottle_array.get(i).getSize()+" "+bottle_array.get(i).getPrize()+"€";
@@ -67,16 +73,6 @@ public class BottleDispenser {
             }
         }
 
-        //System.out.print("Your choice: ");
-        //Scanner scans = new Scanner(System.in);
-
-        /*if (scans.hasNextInt()) {
-            choice = scans.nextInt();
-        }
-        else {
-            scans.next();
-        }*/
-
         float prize = bottle_array.get(choice).getPrize();
 
         try {
@@ -84,6 +80,8 @@ public class BottleDispenser {
                 bottles -= 1;
                 money -= prize;
                 MainActivity.text.setText("KACHUNK! "+bottle_array.get(choice).getName()+" "+bottle_array.get(choice).getSize()+" came out of the dispenser!");
+                bottle_array.remove(choice);
+                receipt = receipt+"\n"+dropdown;
             }
             else if (money < prize) {
                 MainActivity.text.setText("Add money first!");
@@ -97,9 +95,8 @@ public class BottleDispenser {
         } catch (Exception e) {
             MainActivity.text.setText("Bottle not available.");
         }
-        bottle_array.remove(choice);
-        //scans.close();
         choice = 5000; //alustetaan valinta
+        return receipt;
     }
 
 
@@ -143,6 +140,20 @@ public class BottleDispenser {
             MainActivity.text.setText("Add money first!");
         }
         bottle_array.remove(index);
+    }
+
+    public void printReceipt(Context maincontext) {
+        try {
+            String name = "Receipt.txt";
+            OutputStreamWriter osw = new OutputStreamWriter(maincontext.openFileOutput(name, Context.MODE_PRIVATE));
+            osw.write(receipt);
+            osw.close();
+        } catch (IOException e) {
+            Log.e("IO Exception", "IO-virhe");
+        } finally {
+            System.out.println("Kirjoitus toimii!");
+        }
+        receipt = "***Receipt***"; //alustetaan kuitti
     }
 
 }

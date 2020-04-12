@@ -84,6 +84,7 @@ public class BottleDispenser {
                 bottles -= 1;
                 money -= prize;
                 MainActivity.text.setText("KACHUNK! "+bottle_array.get(choice).getName()+" "+bottle_array.get(choice).getSize()+" came out of the dispenser!");
+                bottle_array.remove(choice);
             }
             else if (money < prize) {
                 MainActivity.text.setText("Add money first!");
@@ -97,7 +98,6 @@ public class BottleDispenser {
         } catch (Exception e) {
             MainActivity.text.setText("Bottle not available.");
         }
-        bottle_array.remove(choice);
         //scans.close();
         choice = 5000; //alustetaan valinta
     }
